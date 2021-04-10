@@ -1,7 +1,7 @@
 from django.forms import ModelForm, CharField, PasswordInput
 from django.core.exceptions import ValidationError
 
-from authentication.models import CustomUser
+from models.models import CustomUser
 
 
 class UserCreationForm(ModelForm):

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "authentication",
     "game",
+    "models",
 ]
 
 MIDDLEWARE = [
@@ -122,4 +123,6 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 # CUSTOM SETTINGS
-AUTH_USER_MODEL = "authentication.CustomUser"
+AUTH_USER_MODEL = "models.CustomUser"
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
