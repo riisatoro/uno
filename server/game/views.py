@@ -7,23 +7,33 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST
 )
 
-from models.models import Rooms
+from models.models import Rooms, Game
 from serializers.serializers import ResultSerializer
 
 from .forms import GameCreateForm
 
 
 class RoomsView(APIView):
+    """
+    Get list of available rooms
+    Allow player to create it's own room
+    """
     permission_classes = [IsAuthenticated, ]
 
     def get(self, request):
         data = ResultSerializer(
             Rooms.objects.filter(
-                game__is_ended=False, game__is_started=False), many=True
+                game__is_started=False, game__is_ended=False), many=True
             ).data
         return Response(data, status=HTTP_200_OK)
 
     def post(self, request):
+        if Game.objects.filter(is_ended=False, players__players=request.user):
+            return Response(
+                {'details': 'You are allowed to play in one room'},
+                status=HTTP_400_BAD_REQUEST
+            )
+    
         new_room = GameCreateForm(request.POST)
         if new_room.is_valid():
             new_room.save()
@@ -31,7 +41,19 @@ class RoomsView(APIView):
         return Response(new_room.errors.as_data(), status=HTTP_400_BAD_REQUEST)
 
 
+class PlayerJoinRoom(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def post(self, request):
+        return Response({}, status=HTTP_200_OK)
+    ...
+
+
+
 class PlayerLeaveView(APIView):
+    """
+    Allow player to leave the room
+    """
     permission_classes = [IsAuthenticated, ]
 
     def post(self, request):
