@@ -17,13 +17,20 @@ class CustomUser(AbstractUser):
     updated_at = DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
+
+    def __str__(self):
+        return self.username
 
 
 class Rooms(Model):
     player = ForeignKey(CustomUser, on_delete=CASCADE)
     game = ForeignKey("Game", on_delete=CASCADE)
     player_cards = JSONField()
+    winner = BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.player} {self.player_cards}"
 
 
 class Game(Model):
@@ -34,7 +41,4 @@ class Game(Model):
     started_at = DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{is_started}?{is_ended}?{started_at}"
-
-
-
+        return f"{self.is_started} ? {self.is_ended} ? {self.started_at}"
