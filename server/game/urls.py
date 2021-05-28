@@ -3,12 +3,10 @@ from django.urls import path, include
 
 from .views import (
     ResultsView,
-    RoomsView,
-    PlayerLeaveView,
+    GameView,
 )
 
 urlpatterns = [
-    path('rooms/', RoomsView.as_view(), name="rooms"),
-    path('rooms/leave/', PlayerLeaveView.as_view(), name="left_game"),
+    path('rooms/', GameView.as_view(), name="games"),
     path('results/', ResultsView.as_view(), name="results"),
 ]

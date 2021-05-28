@@ -3,7 +3,7 @@ from django.forms import (
     IntegerField,
 )
 
-from models.models import Game
+from models.models import Game, Rooms
 
 
 class GameCreateForm(ModelForm):
@@ -11,3 +11,10 @@ class GameCreateForm(ModelForm):
     class Meta:
         model = Game
         fields = ['player_amount']
+
+
+class RoomCreateForm(ModelForm):
+
+    class Meta:
+        model = Rooms
+        fields = '__all__'

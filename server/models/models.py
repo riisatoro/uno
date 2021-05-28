@@ -32,7 +32,7 @@ class Rooms(Model):
     winner = BooleanField(default=False)
 
     def __str__(self):
-        return f"Player = {self.player} Cards = {self.player_cards} Left = {self.has_left} Win = {winner}"
+        return f"Player = {self.player} Cards = {self.player_cards} Left = {self.has_left} Win = {self.winner}"
 
 
 class Game(Model):
