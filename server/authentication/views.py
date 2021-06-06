@@ -8,9 +8,10 @@ from rest_framework.status import (
 
 from .forms import UserCreationForm
 
+
 class Registration(APIView):
     def post(self, request):
-        user = UserCreationForm(request.POST)
+        user = UserCreationForm(request.data)
         if user.is_valid():
             user.save()
             return Response({}, status=HTTP_200_OK)

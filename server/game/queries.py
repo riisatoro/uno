@@ -38,3 +38,7 @@ def player_allowed_to_join_game(player, game_id):
         .exclude(players__in=[player])
         .exists()
     )
+
+
+def get_game_by_user(player):
+    return Game.objects.filter(is_ended=False, players__in=[player]).first()

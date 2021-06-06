@@ -11,9 +11,29 @@ from game.queries import (
     count_players_in_game,
     join_player_game,
     player_allowed_to_join_game,
+    get_game_by_user,
 )
 from gamecore.main import get_random_card
 from serializers.serializers import AvailableGamesSerializer
+
+
+class MyGame(APIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def get(self, request):
+        game = get_game_by_user(request.user)
+        if not game:
+            return Response(
+                {"details": "You are not connected to the room"},
+                status=HTTP_400_BAD_REQUEST,
+            )
+        data = AvailableGamesSerializer(game).data
+        return Response(
+            data,
+            HTTP_200_OK
+        )
 
 
 class GameView(APIView):
@@ -34,10 +54,10 @@ class GameView(APIView):
                 {"details": "You are allowed to play only in one room"},
                 status=HTTP_400_BAD_REQUEST,
             )
-        if not player_allowed_to_join_game(request.user, request.POST.get("game_id")):
+        if not player_allowed_to_join_game(request.user, request.data.get("game_id")):
             return Response({"details": "You are not allowed to join this game"})
 
-        game = get_game_by_id(request.POST.get("game_id"))
+        game = get_game_by_id(request.data.get("game_id"))
         cards = get_random_card()
         join_player_game(request.user, game, cards)
         if game.players.count() == game.player_amount:
@@ -53,7 +73,7 @@ class GameView(APIView):
                 status=HTTP_400_BAD_REQUEST,
             )
 
-        new_game = GameCreateForm(request.POST)
+        new_game = GameCreateForm(request.data)
         if not new_game.is_valid():
             return Response(new_game.errors.as_data(), status=HTTP_400_BAD_REQUEST)
 
@@ -69,7 +89,7 @@ class GameView(APIView):
         return Response({}, status=HTTP_201_CREATED)
 
     def delete(self, request):
-        game = get_game_by_id(request.POST.get("game_id"))
+        game = get_game_by_id(request.data.get("game_id"))
         room = get_room_by_game_player(game, request.user)
         if not game or not room:
             return Response({"details": "This game or room does not exist"})

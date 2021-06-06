@@ -23,5 +23,7 @@ class AvailableGamesSerializer(ModelSerializer):
 
     class Meta:
         model = Game
-        fields = ['id', 'player_amount', 'players']
+        fields = ['id', 'player_amount', 'players', 'is_started']
         depth = 1
+
+
